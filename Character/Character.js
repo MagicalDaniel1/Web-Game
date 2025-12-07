@@ -1,13 +1,10 @@
-import {BaseEntity} from "../BaseEntity";
-import {Inventory} from "../Inventory/Inventory";
+import {Inventory} from "../Inventory/Inventory.js";
 
-
-export class Character extends BaseEntity {
-    #hp;
-
-    constructor(name, hp, baseDMG) {
-        super(name);
-        this.#hp = hp;
+export class Character{
+    constructor(name, hp, baseDMG, role) {
+        this.name = name
+        this.role = role;
+        this.hp = hp;
         this.maxCritRate = 1;
         this.maxCritDMG = 2;
         //attack
@@ -21,34 +18,23 @@ export class Character extends BaseEntity {
         this.healEffect = 0;
         //hit rate for long distance chars
         this.effectHITRate = 0.5;
-        this.inventory = new Inventory(this);
-    }
-
-    get hp() {
-        return this.#hp;
+        // this.inventory = new Inventory(this);
     }
 
     get isAlive() {
-        return this.#hp > 0;
+        return this.hp > 0;
     }
 
-    heal(amount) {
-        if (!this.isAlive) {
-            return;
-        }
-
-        this.#hp = Math.min(this.#hp + amount);
-    }
 
     takeDamage(amount) {
         if (!this.isAlive) {
             return;
         }
 
-        this.#hp -= amount;
+        this.hp -= amount;
 
-        if (this.#hp < 0) {
-            this.#hp = 0;
+        if (this.hp < 0) {
+            this.hp = 0;
         }
     }
 
@@ -57,7 +43,7 @@ export class Character extends BaseEntity {
             return;
         }
 
-        this.#hp += amount;
+        this.hp += amount;
     }
 
     takeSupport(amountCrit, amountDMG) {
@@ -69,63 +55,64 @@ export class Character extends BaseEntity {
         this.critDMG = Math.min(this.critDMG + amountDMG, this.maxCritDMG);
     }
 
-    attack(target) {
-        if (!this.isAlive) {
+    attack(char, target) {
+        if (!char.isAlive) {
             return;
         }
-        const isCrit = Math.random() <= this.critRate;
+        const isCrit = Math.random() <= char.critRate;
         let damage;
 
         if(isCrit) {
-            damage = this.baseDMG * this.critDMG
+            damage = char.baseDMG * char.critDMG
         } else {
-            damage = this.baseDMG;
+            damage = char.baseDMG;
         }
 
-        console.log(`${this.displayName} attack ${target.displayName} and did ${damage} damage.`);
+        console.log(`${char.name} attack ${target.name} and did ${damage} damage.`);
         target.takeDamage(damage);
     }
 
-    healing(target) {
-        if (!this.isAlive) {
+    healing(char, target) {
+        if (!char.isAlive) {
             return;
         }
 
-        const healNum = target.hp * this.healEffect;
-        console.log(`${this.displayName} healed ${target.displayName} added ${healNum} hp.`);
+        const healNum = target.hp * char.healEffect;
+        console.log(`${char.name} healed ${target.name} added ${healNum} hp. now his/her hp is ${target.hp}`);
         target.takeHeal(healNum);
 
     }
 
-    support(target) {
-        if (!this.isAlive) {
+    support(char, target) {
+        if (!char.isAlive) {
             return;
         }
-        const critRateNum = this.critRateSupportEffect;
-        const critDMGNum = this.critDMGSupportEffect;
-        console.log(`${this.displayName} supported ${target.displayName} added ${critRateNum} crit rate and ${critDMGNum} crat DMG.`);
+        const critRateNum = char.critRateSupportEffect;
+        const critDMGNum = char.critDMGSupportEffect;
+        console.log(`${char.name} supported ${target.name} added ${critRateNum} crit rate and ${critDMGNum} crat DMG. now his/her crit rate is ${target.critRate} and crit DNG ${target.critDMG}`);
         target.takeSupport(critRateNum, critDMGNum);
     }
 
-    distanceAttack(target) {
-        if (!this.isAlive) {
+    distanceAttack(char, target) {
+        if (!char.isAlive) {
             return;
         }
 
-        const isHIT = Math.random() <= this.effectHITRate;
+        const isHIT = Math.random() <= char.effectHITRate;
         let damage;
 
         if(isHIT) {
-            damage = this.baseDMG;
+            damage = char.baseDMG;
         } else {
             damage = 0;
         }
 
-        console.log(`${this.displayName} attack ${target.displayName} and did ${damage} damage.`);
+        console.log(`${char.name} attack ${target.name} and did ${damage} damage.`);
         target.takeDamage(damage);
     }
 
     info() {
-        return `${this.displayName} [HP: ${this.hp}]`;
+        return `${this.name} [HP: ${this.hp}]`;
     }
+
 }
