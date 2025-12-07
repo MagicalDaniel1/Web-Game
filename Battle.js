@@ -1,47 +1,69 @@
-class Battle {
-    static fightTurn(attacker, defender) {
-        if (!attacker.isAlive || !defender.isAlive) {
-            return;
+
+//import {Inventory} from "./Inventory/Inventory";
+
+export class Battle {
+    // static fightTurn(attacker, defender) {
+    //     if (!attacker.isAlive || !defender.isAlive) {
+    //         return;
+    //     }
+    //
+    //     attacker.attack(defender);
+    //
+    //     console.log(`Right now state: ${attacker.info()} vs ${defender.info()}`);
+    //     console.log('---------------------------------------------------------');
+    // }
+    //
+    // static longDistanceFightTurn(attacker, defender) {
+    //     if (!attacker.isAlive || !defender.isAlive) {
+    //         return;
+    //     }
+    //
+    //     attacker.distanceAttack(defender);
+    //
+    //     console.log(`Right now state: ${attacker.info()} vs ${defender.info()}`);
+    //     console.log('---------------------------------------------------------');
+    // }
+    //
+    // static supportTurn(support, char) {
+    //     if (!support.isAlive || !char.isAlive ) {
+    //         return;
+    //     }
+    //
+    //     support.support(char);
+    //
+    //     console.log(`Right now state: ${support.info()} supported ${char.info()}`);
+    //     console.log('---------------------------------------------------------');
+    // }
+    //
+    // static healTurn(healer, char) {
+    //     if (!healer.isAlive || !char.isAlive ) {
+    //         return;
+    //     }
+    //
+    //     healer.healing(char);
+    //
+    //     console.log(`Right now state: ${healer.info()} healed ${char.info()}`);
+    //     console.log('---------------------------------------------------------');
+    //
+    // }
+
+    static move(char, target) {
+        if (!char.isAlive && !target.isAlive) return;
+
+        switch(char.role) {
+            case 'attacker':
+                char.attack(char, target);
+                break;
+            case 'healer':
+                char.healing(char, target);
+                break;
+            case 'support':
+                char.support(char, target);
+                break;
+            case 'magician':
+                char.distanceAttack(char, target);
+                break;
         }
-
-        attacker.attack(defender);
-
-        console.log(`Right now state: ${attacker.info()} vs ${defender.info()}`);
-        console.log('---------------------------------------------------------');
-    }
-
-    static longDistanceFightTurn(attacker, defender) {
-        if (!attacker.isAlive || !defender.isAlive) {
-            return;
-        }
-
-        attacker.distanceAttack(defender);
-
-        console.log(`Right now state: ${attacker.info()} vs ${defender.info()}`);
-        console.log('---------------------------------------------------------');
-    }
-
-    static supportTurn(support, char) {
-        if (!support.isAlive || !char.isAlive ) {
-            return;
-        }
-
-        support.support(char);
-
-        console.log(`Right now state: ${support.info()} supported ${char.info()}`);
-        console.log('---------------------------------------------------------');
-    }
-
-    static healTurn(healer, char) {
-        if (!healer.isAlive || !char.isAlive ) {
-            return;
-        }
-
-        healer.healing(char);
-
-        console.log(`Right now state: ${healer.info()} healed ${char.info()}`);
-        console.log('---------------------------------------------------------');
-
     }
 
     static fight(charA, charB, charC, charD, enemyA, enemyBoss, enemyC, enemyD) {
@@ -57,17 +79,16 @@ class Battle {
             enemyTeam = enemyTeam.filter(enemy => enemy.isAlive);
         }
 
-        let randomEnemy = enemyTeam[Math.floor(Math.random() * enemyTeam.length)];
-        let randomChar = myTeam[Math.floor(Math.random() * myTeam.length)];
-
         while (myTeam.length > 0 && enemyTeam.length > 0 && round < 50) {
 
             //char A
             check()
             console.log(`Round: ${round}`);
 
-            if(charA.isAlive && enemyTeam > 0) {
-                this.fightTurn(charA, randomEnemy);
+            if(charA.isAlive && enemyTeam.length > 0) {
+                let enemyRandom = enemyTeam[Math.floor(Math.random() * enemyTeam.length)];
+                this.move(charA, enemyRandom);
+                console.log(`${charA.name} attacked ${enemyRandom.name}`)
                 if (myTeam.length === 0 || enemyTeam.length === 0) {
                     break;
                 }
@@ -75,8 +96,8 @@ class Battle {
 
             //enemy A
             check()
-            if(enemyA.isAlive && myTeam > 0) {
-                this.fightTurn(enemyA, randomChar);
+            if(enemyA.isAlive && myTeam.length > 0) {
+                this.move(enemyA, myTeam[Math.floor(Math.random() * myTeam.length)]);
                 if (myTeam.length === 0 || enemyTeam.length === 0) {
                     break;
                 }
@@ -84,8 +105,8 @@ class Battle {
 
             //char support B
             check()
-            if(charB.isAlive && myTeam > 0) {
-                this.supportTurn(charB, randomChar);
+            if(charB.isAlive && myTeam.length > 0) {
+                this.move(charB, myTeam[Math.floor(Math.random() * myTeam.length)]);
                 if (myTeam.length === 0 || enemyTeam.length === 0) {
                     break;
                 }
@@ -93,8 +114,8 @@ class Battle {
 
             //enemy B
             check()
-            if(enemyBoss.isAlive && myTeam > 0) {
-                this.fightTurn(enemyBoss, randomChar);
+            if(enemyBoss.isAlive && myTeam.length > 0) {
+                this.move(enemyBoss, myTeam[Math.floor(Math.random() * myTeam.length)]);
                 if (myTeam.length === 0 || enemyTeam.length === 0) {
                     break;
                 }
@@ -102,8 +123,8 @@ class Battle {
 
             //char Magician C
             check()
-            if(charC.isAlive && enemyTeam > 0) {
-                this.longDistanceFightTurn(charC, randomEnemy);
+            if(charC.isAlive && enemyTeam.length > 0) {
+                this.move(charC, enemyTeam[Math.floor(Math.random() * enemyTeam.length)]);
                 if (myTeam.length === 0 || enemyTeam.length === 0) {
                     break;
                 }
@@ -111,8 +132,8 @@ class Battle {
 
             //enemy C
             check()
-            if(enemyC.isAlive && myTeam > 0) {
-                this.fightTurn(enemyC, randomChar);
+            if(enemyC.isAlive && myTeam.length > 0) {
+                this.move(enemyC, myTeam[Math.floor(Math.random() * myTeam.length)]);
                 if (myTeam.length === 0 || enemyTeam.length === 0) {
                     break;
                 }
@@ -120,8 +141,8 @@ class Battle {
 
             //char healer D
             check()
-            if(charD.isAlive && myTeam > 0) {
-                this.healTurn(charC, randomChar);
+            if(charD.isAlive && myTeam.length > 0) {
+                this.move(charD, myTeam[Math.floor(Math.random() * myTeam.length)]);
                 if (myTeam.length === 0 || enemyTeam.length === 0) {
                     break;
                 }
@@ -129,8 +150,8 @@ class Battle {
 
             //enemy D
             check()
-            if(enemyD.isAlive && myTeam > 0) {
-                this.fightTurn(enemyD, randomChar);
+            if(enemyD.isAlive && myTeam.length > 0) {
+                this.move(enemyD, myTeam[Math.floor(Math.random() * myTeam.length)]);
                 if (myTeam.length === 0 || enemyTeam.length === 0) {
                     break;
                 }
@@ -142,9 +163,9 @@ class Battle {
         if (myTeam.length === 0 || enemyTeam.length === 0) {
             console.log('Both teams are loose!');
         } else if (myTeam.length > 0) {
-            console.log(`Winners: ${myTeam.displayName}`);
+            console.log(`Winners: ${charA.name}, ${charB.name}, ${charC.name}, ${charD.name}`);
         } else if (enemyTeam.length > 0) {
-            console.log(`Winners: ${enemyTeam.displayName}`);
+            console.log(`Winners: ${enemyTeam.name}`);
         } else {
             console.log(`Something went wrong!`);
         }
