@@ -1,21 +1,19 @@
-import {Warrior} from "./Character/Warrior";
-import {Mage} from "./Character/Mage";
-import {Potion} from "./Inventory/Potion";
-import {Weapon} from "./Inventory/Weapon";
+import {Battle} from "./Battle.js";
+import {Character} from "./Character/Character.js";
 
-const warrior = new Warrior('Daniil Skybenich');
-const mage = new Mage('Maksym Vovkovich');
 
-const smallPotion = new Potion("Little potion of life", 20);
-const bigPotion = new Potion("Little potion of emperor", 50);
-const sword = new Weapon("Sword of berserk", 10);
+const healerAngel = new Character('Stella', 1500, 0, 'healer');
+healerAngel.healEffect = 200;
 
-warrior.inventory.addItem(smallPotion);
-warrior.inventory.addItem(sword);
-mage.inventory.addItem(bigPotion);
 
-warrior.inventory.getItems();
-mage.inventory.getItems();
+const attackerFemale = new Character('Anby', 2100, 410, 'attacker');
+const attackerMale = new Character('Moze', 1940, 460, 'attacker');
 
-console.log('Battle: ');
-Battle.fight(warrior, mage);
+const supportPossum = new Character('stupid Possum', 1790, 0, 'support');
+supportPossum.critDMGSupportEffect = 0.4;
+supportPossum.critRateSupportEffect = 0.2;
+
+const longDistanceAttackerFemale = new Character('Fellar', 3000, 250, 'magician');
+longDistanceAttackerFemale.effectHITRate = 0.5;
+
+Battle.fight(attackerFemale, supportPossum, longDistanceAttackerFemale, healerAngel, attackerMale, attackerMale, attackerMale, attackerMale);
