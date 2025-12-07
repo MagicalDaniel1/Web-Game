@@ -35,6 +35,7 @@ export class Character{
 
         if (this.hp < 0) {
             this.hp = 0;
+            console.log(`${this.name} is dead!!!!!`)
         }
     }
 
@@ -116,3 +117,4 @@ export class Character{
     }
 
 }
+
